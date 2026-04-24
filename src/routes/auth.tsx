@@ -28,14 +28,18 @@ function RouteComponent() {
   const isPending = login.isPending || signup.isPending
   const error = login.error || signup.error
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (mode === 'signin') {
-      await login.mutateAsync({ email, password })
-    } else {
-      await signup.mutateAsync({ email, password, name })
+    try {
+      if (mode === 'signin') {
+        await login.mutateAsync({ email, password })
+      } else {
+        await signup.mutateAsync({ email, password, name })
+      }
+      navigate({ to: '/' })
+    } catch {
+      // login.error already has the error, nothing extra needed here
     }
-    navigate({ to: '/' })
   }
 
   return (
