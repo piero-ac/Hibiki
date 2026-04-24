@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { account } from '@/lib/appwrite'
 import { useLogout } from '@/hooks/useAuth'
 
@@ -17,11 +17,11 @@ export const Route = createFileRoute('/')({
 function Home() {
   const { user } = Route.useRouteContext()
   const logout = useLogout()
-  const router = useRouter()
+  const navigate = useNavigate()
 
   async function handleLogout() {
     await logout.mutateAsync()
-    router.navigate({ to: '/auth' })
+    navigate({ to: '/auth' })
   }
 
   return (
