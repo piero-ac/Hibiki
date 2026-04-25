@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
 import { tablesDB, storage, account } from '@/lib/appwrite'
 import { ID } from 'appwrite'
@@ -84,7 +84,9 @@ function RouteComponent() {
   return (
     <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
       <h1 className="text-xl font-medium mb-6">Upload Track</h1>
-
+      <div>
+        <Link to={'/'}>Home</Link>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm text-gray-500 mb-1">Audio File</label>

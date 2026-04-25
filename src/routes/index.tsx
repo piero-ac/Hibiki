@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router'
 import { account } from '@/lib/appwrite'
 import { useLogout } from '@/hooks/useAuth'
 
@@ -41,6 +46,9 @@ function Home() {
           <span className="text-black font-medium">Joined</span>:{' '}
           {new Date(user.$createdAt).toLocaleDateString()}
         </p>
+      </div>
+      <div className="">
+        <Link to={'/admin'}>Admin Panel</Link>
       </div>
       <button
         onClick={handleLogout}
