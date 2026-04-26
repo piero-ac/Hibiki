@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlayerTrackIdRouteImport } from './routes/player.$trackId'
 import { Route as CategoryCategoryRouteImport } from './routes/category.$category'
 
 const AuthRoute = AuthRouteImport.update({
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayerTrackIdRoute = PlayerTrackIdRouteImport.update({
+  id: '/player/$trackId',
+  path: '/player/$trackId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoryCategoryRoute = CategoryCategoryRouteImport.update({
   id: '/category/$category',
   path: '/category/$category',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/category/$category': typeof CategoryCategoryRoute
+  '/player/$trackId': typeof PlayerTrackIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/category/$category': typeof CategoryCategoryRoute
+  '/player/$trackId': typeof PlayerTrackIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,25 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/category/$category': typeof CategoryCategoryRoute
+  '/player/$trackId': typeof PlayerTrackIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/category/$category'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/category/$category'
+    | '/player/$trackId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/category/$category'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/category/$category'
+  to: '/' | '/admin' | '/auth' | '/category/$category' | '/player/$trackId'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/category/$category'
+    | '/player/$trackId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +87,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CategoryCategoryRoute: typeof CategoryCategoryRoute
+  PlayerTrackIdRoute: typeof PlayerTrackIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/player/$trackId': {
+      id: '/player/$trackId'
+      path: '/player/$trackId'
+      fullPath: '/player/$trackId'
+      preLoaderRoute: typeof PlayerTrackIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$category': {
       id: '/category/$category'
       path: '/category/$category'
@@ -107,6 +135,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CategoryCategoryRoute: CategoryCategoryRoute,
+  PlayerTrackIdRoute: PlayerTrackIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
