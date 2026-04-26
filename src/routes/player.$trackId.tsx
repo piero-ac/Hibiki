@@ -36,6 +36,7 @@ function RouteComponent() {
   const [timer, setTimer] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [rating, setRating] = useState<number | null>(null)
+  const [loop, setLoop] = useState(true)
 
   const {
     data: track,
@@ -166,11 +167,19 @@ function RouteComponent() {
           <audio
             ref={audioRef}
             controls
-            loop={mode === 'practice'}
+            loop={loop}
             src={audioUrl}
             className="w-full"
           />
         )}
+        <button
+          onClick={() => setLoop((p) => !p)}
+          className={`text-sm border rounded-lg px-3 py-1.5 transition-colors ${
+            loop ? 'border-black text-black' : 'border-gray-200 text-gray-500'
+          }`}
+        >
+          {loop ? 'Loop on' : 'Loop off'}
+        </button>
       </div>
 
       {mode === 'practice' && (
