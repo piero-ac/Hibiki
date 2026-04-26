@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  redirect,
+  useRouter,
+  useNavigate,
+} from '@tanstack/react-router'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useState, useRef } from 'react'
 import { tablesDB, storage, account } from '@/lib/appwrite'
@@ -37,6 +42,7 @@ function RouteComponent() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [rating, setRating] = useState<number | null>(null)
   const [loop, setLoop] = useState(true)
+  const navigate = useNavigate()
 
   const {
     data: track,
@@ -104,7 +110,16 @@ function RouteComponent() {
   }
 
   async function handleComplete() {
-    await saveSession.mutateAsync()
+    try {
+      await saveSession.mutateAsync()
+      window.confirm('🎉 Session complete! Your attempt has been saved.')
+      //  navigate({ to: '/history' })
+      navigate({ to: '/' })
+    } catch {
+      window.alert(
+        'Something went wrong saving your session. Please try again.',
+      )
+    }
   }
 
   function startTimer() {
