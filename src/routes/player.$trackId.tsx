@@ -35,6 +35,7 @@ function RouteComponent() {
   const [speed, setSpeed] = useState(1)
   const [timer, setTimer] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [rating, setRating] = useState<number | null>(null)
 
   const {
     data: track,
@@ -61,6 +62,7 @@ function RouteComponent() {
           userId,
           trackId,
           completedAt: new Date().toISOString(),
+          rating,
         },
       }),
   })
@@ -69,6 +71,7 @@ function RouteComponent() {
     setError('')
     chunksRef.current = [] // clear previous chunks
     setRecordingUrl(null) // clear previous recording
+    setRating(null)
     startTimer()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -301,6 +304,25 @@ function RouteComponent() {
             <div>
               <p className="text-xs text-gray-500 mb-1">Your recording</p>
               <audio controls src={recordingUrl} className="w-full" />
+
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2">Rate your attempt</p>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setRating(r)}
+                      className={`flex-1 py-2 text-sm border rounded-lg transition-colors ${
+                        rating === r
+                          ? 'border-black text-black font-medium'
+                          : 'border-gray-200 text-gray-500 hover:border-gray-400'
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -312,7 +334,7 @@ function RouteComponent() {
       {mode === 'record' && recordingUrl && (
         <button
           onClick={handleComplete}
-          disabled={saveSession.isPending || saveSession.isSuccess}
+          disabled={!rating || saveSession.isPending || saveSession.isSuccess}
           className="w-full bg-black text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50"
         >
           {saveSession.isPending
