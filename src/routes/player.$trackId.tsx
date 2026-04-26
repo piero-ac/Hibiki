@@ -33,6 +33,8 @@ function RouteComponent() {
   const chunksRef = useRef<Blob[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
   const [speed, setSpeed] = useState(1)
+  const [timer, setTimer] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const {
     data: track,
@@ -67,6 +69,7 @@ function RouteComponent() {
     setError('')
     chunksRef.current = [] // clear previous chunks
     setRecordingUrl(null) // clear previous recording
+    startTimer()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mediaRecorder = new MediaRecorder(stream)
@@ -93,10 +96,25 @@ function RouteComponent() {
   function stopRecording() {
     mediaRecorderRef.current?.stop()
     setRecording(false)
+    stopTimer()
   }
 
   async function handleComplete() {
     await saveSession.mutateAsync()
+  }
+
+  function startTimer() {
+    setTimer(0)
+    timerRef.current = setInterval(() => {
+      setTimer((t) => t + 1)
+    }, 1000)
+  }
+
+  function stopTimer() {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
   }
 
   function seek(seconds: number) {
@@ -262,12 +280,20 @@ function RouteComponent() {
                 Start recording
               </button>
             ) : (
-              <button
-                onClick={stopRecording}
-                className="flex-1 border border-red-500 text-red-500 rounded-lg py-2 text-sm font-medium"
-              >
-                Stop recording
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={stopRecording}
+                  className="flex-1 border border-red-500 text-red-500 rounded-lg py-2 text-sm font-medium"
+                >
+                  Stop recording
+                </button>
+                <p className="text-sm text-red-500 font-medium tabular-nums">
+                  {Math.floor(timer / 60)
+                    .toString()
+                    .padStart(2, '0')}
+                  :{(timer % 60).toString().padStart(2, '0')}
+                </p>
+              </div>
             )}
           </div>
 
