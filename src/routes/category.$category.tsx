@@ -60,9 +60,8 @@ function CategoryPage() {
           {tracks.map((track: any) => (
             <Link
               key={track.$id}
-              // to="/player/$trackId"
-              // params={{ trackId: track.$id }}
-              to="/"
+              to="/player/$trackId"
+              params={{ trackId: track.$id }}
               className="block border border-gray-200 rounded-lg px-4 py-4 hover:border-gray-400 transition-colors"
             >
               <p className="text-sm font-medium">{track.title}</p>
