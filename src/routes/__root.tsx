@@ -1,4 +1,4 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Navigation } from '@/components/Navigation'
@@ -10,9 +10,11 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  const location = useLocation()
+  const hideNav = location.pathname === '/auth'
   return (
     <>
-      <Navigation />
+      {!hideNav && <Navigation />}
       <Outlet />
       <TanStackDevtools
         config={{
