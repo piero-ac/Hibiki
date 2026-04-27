@@ -50,7 +50,12 @@ function RouteComponent() {
     isError,
   } = useQuery({
     queryKey: ['track', trackId],
-    queryFn: () => tablesDB.getRow(DATABASE_ID, 'tracks', trackId),
+    queryFn: () =>
+      tablesDB.getRow({
+        databaseId: DATABASE_ID,
+        tableId: 'tracks',
+        rowId: trackId,
+      }),
   })
 
   const audioUrl = track
@@ -70,6 +75,7 @@ function RouteComponent() {
           trackId,
           completedAt: new Date().toISOString(),
           rating,
+          trackTitle: track?.title,
         },
       }),
   })
