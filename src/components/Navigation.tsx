@@ -23,7 +23,12 @@ export function Navigation() {
         >
           Home
         </Link>
-        {/* <Link to="/history" className="text-sm text-gray-500 hover:text-black transition-colors">History</Link> */}
+        <Link
+          to="/history"
+          className="text-sm text-gray-500 hover:text-black transition-colors"
+        >
+          History
+        </Link>
         {user?.labels.includes('admin') && (
           <Link
             to="/admin"
