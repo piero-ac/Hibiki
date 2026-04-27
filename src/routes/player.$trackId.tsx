@@ -119,8 +119,7 @@ function RouteComponent() {
     try {
       await saveSession.mutateAsync()
       window.confirm('🎉 Session complete! Your attempt has been saved.')
-      //  navigate({ to: '/history' })
-      navigate({ to: '/' })
+      navigate({ to: '/history' })
     } catch {
       window.alert(
         'Something went wrong saving your session. Please try again.',
