@@ -16,7 +16,7 @@ export const Route = createFileRoute('/player/$trackId')({
   beforeLoad: async () => {
     try {
       const user = await account.get()
-      return { userId: user.$id }
+      return { userId: user.$id, isAnonymous: !user.email }
     } catch {
       throw redirect({ to: '/auth' })
     }
@@ -27,7 +27,7 @@ export const Route = createFileRoute('/player/$trackId')({
 function RouteComponent() {
   const router = useRouter()
   const { trackId } = Route.useParams()
-  const { userId } = Route.useRouteContext()
+  const { userId, isAnonymous } = Route.useRouteContext()
   const [mode, setMode] = useState<'practice' | 'record'>('practice')
   const [showTranscript, setShowTranscript] = useState(false)
   const [showTranslation, setShowTranslation] = useState(false)
@@ -117,7 +117,25 @@ function RouteComponent() {
 
   async function handleComplete() {
     try {
-      await saveSession.mutateAsync()
+      if (isAnonymous) {
+        const existing = JSON.parse(
+          localStorage.getItem('hibiki-sessions') ?? '[]',
+        )
+        const newSession = {
+          id: crypto.randomUUID(),
+          trackId,
+          trackTitle: track?.title,
+          rating,
+          duration: track?.duration,
+          completedAt: new Date().toISOString(),
+        }
+        localStorage.setItem(
+          'hibiki-sessions',
+          JSON.stringify([newSession, ...existing]),
+        )
+      } else {
+        await saveSession.mutateAsync()
+      }
       window.confirm('🎉 Session complete! Your attempt has been saved.')
       navigate({ to: '/history' })
     } catch {
