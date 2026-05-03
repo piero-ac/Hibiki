@@ -42,6 +42,11 @@ function RouteComponent() {
     }
   }
 
+  async function handleGuest() {
+    await account.createAnonymousSession()
+    navigate({ to: '/' })
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
@@ -55,6 +60,7 @@ function RouteComponent() {
             Sign in
           </button>
           <button
+            disabled
             onClick={() => setMode('signup')}
             className={`flex-1 pb-2 text-sm border-b-2 transition-colors ${mode === 'signup' ? 'border-black text-black' : 'border-transparent text-gray-400'}`}
           >
@@ -110,6 +116,14 @@ function RouteComponent() {
               : mode === 'signin'
                 ? 'Sign in'
                 : 'Create account'}
+          </button>
+          <button
+            type="button"
+            disabled={isPending}
+            onSubmit={handleGuest}
+            className="w-full border border-gray-200 text-gray-600 rounded-lg py-2 text-sm font-medium hover:border-gray-400 transition-colors"
+          >
+            {isPending ? 'Please wait...' : 'Continue as Guest'}
           </button>
         </form>
       </div>
