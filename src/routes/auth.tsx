@@ -53,83 +53,69 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-medium text-center mb-8">hibiki</h1>
-
-        <div className="flex mb-6">
-          <button
-            onClick={() => setMode('signin')}
-            className={`flex-1 pb-2 text-sm border-b-2 transition-colors ${mode === 'signin' ? 'border-black text-black' : 'border-transparent text-gray-400'}`}
-          >
-            Sign in
-          </button>
-          <button
-            disabled
-            onClick={() => setMode('signup')}
-            className={`flex-1 pb-2 text-sm border-b-2 transition-colors ${mode === 'signup' ? 'border-black text-black' : 'border-transparent text-gray-400'}`}
-          >
-            Sign up
-          </button>
+    <div className="min-h-screen flex items-center justify-center px-4 bg-steel-700">
+      <div className="w-full max-w-sm bg-steel-50 rounded-xl border border-steel-400 p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-xl font-medium text-steel-800">hibiki</h1>
+          <p className="text-sm text-steel-500 mt-1">language shadowing</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'signup' && (
-            <div>
-              <label className="block text-sm text-gray-500 mb-1">Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-gray-400"
-              />
-            </div>
-          )}
-
+        <form onSubmit={handleSubmit} className="space-y-4 mb-4">
           <div>
-            <label className="block text-sm text-gray-500 mb-1">Email</label>
+            <label className="block text-xs uppercase tracking-wide text-steel-600 mb-1.5">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-gray-400"
+              className="w-full px-3 py-2.5 text-sm rounded-lg border border-steel-300 bg-white text-steel-800 outline-none focus:border-steel-600"
             />
           </div>
-
           <div>
-            <label className="block text-sm text-gray-500 mb-1">Password</label>
+            <label className="block text-xs uppercase tracking-wide text-steel-600 mb-1.5">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-gray-400"
+              className="w-full px-3 py-2.5 text-sm rounded-lg border border-steel-300 bg-white text-steel-800 outline-none focus:border-steel-600"
             />
           </div>
 
-          {error && <p className="text-sm text-red-500">{error.message}</p>}
+          {login.isError && (
+            <p className="text-sm text-red-500">{login.error.message}</p>
+          )}
 
           <button
             type="submit"
-            disabled={isPending}
-            className="w-full bg-black text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50"
+            disabled={login.isPending}
+            className="w-full py-2.5 text-sm font-medium rounded-lg bg-steel-800 text-steel-50 disabled:opacity-50"
           >
-            {isPending
-              ? 'Please wait...'
-              : mode === 'signin'
-                ? 'Sign in'
-                : 'Create account'}
+            {login.isPending ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-steel-200" />
+          <span className="text-xs text-steel-400">or</span>
+          <div className="flex-1 h-px bg-steel-200" />
+        </div>
+
         <button
           type="button"
           onClick={handleGuest}
-          className="w-full border border-gray-200 text-gray-600 rounded-lg py-2 text-sm font-medium hover:border-gray-400 transition-colors"
+          className="w-full py-2.5 text-sm font-medium rounded-lg bg-steel-100 border border-steel-300 text-steel-700"
         >
-          Continue as Guest
+          Continue as guest
         </button>
+
+        <p className="text-xs text-center text-steel-500 mt-4">
+          Guest sessions are saved locally and cleared on logout.
+        </p>
       </div>
     </div>
   )
