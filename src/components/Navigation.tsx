@@ -39,7 +39,14 @@ export function Navigation() {
               Admin
             </Link>
           )}
-          {!isAnonymous && (
+          {isAnonymous ? (
+            <Link
+              to="/auth"
+              className="text-sm text-gray-500 hover:text-black transition-colors"
+            >
+              Sign in
+            </Link>
+          ) : (
             <button
               onClick={handleLogout}
               disabled={logout.isPending}
