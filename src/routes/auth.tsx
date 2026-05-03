@@ -43,8 +43,12 @@ function RouteComponent() {
   }
 
   async function handleGuest() {
-    await account.createAnonymousSession()
-    navigate({ to: '/' })
+    try {
+      await account.createAnonymousSession()
+      navigate({ to: '/' })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
@@ -117,15 +121,14 @@ function RouteComponent() {
                 ? 'Sign in'
                 : 'Create account'}
           </button>
-          <button
-            type="button"
-            disabled={isPending}
-            onSubmit={handleGuest}
-            className="w-full border border-gray-200 text-gray-600 rounded-lg py-2 text-sm font-medium hover:border-gray-400 transition-colors"
-          >
-            {isPending ? 'Please wait...' : 'Continue as Guest'}
-          </button>
         </form>
+        <button
+          type="button"
+          onClick={handleGuest}
+          className="w-full border border-gray-200 text-gray-600 rounded-lg py-2 text-sm font-medium hover:border-gray-400 transition-colors"
+        >
+          Continue as Guest
+        </button>
       </div>
     </div>
   )
