@@ -56,13 +56,6 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
-      {isAnonymous && (
-        <div className="border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-500 mb-6">
-          You are browsing as a guest. Your history is saved locally and will be
-          lost if you clear your browser data.
-        </div>
-      )}
-
       {/* Streak */}
       <div className="border border-gray-200 rounded-xl p-6 text-center mb-8">
         <p className="text-5xl font-medium mb-1">{streak}</p>
