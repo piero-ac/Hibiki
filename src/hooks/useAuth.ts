@@ -14,11 +14,20 @@ export function useLogin() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      account.createEmailPasswordSession({
-        email,
-        password,
-      }),
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string
+      password: string
+    }) => {
+      try {
+        await account.deleteSession({ sessionId: 'current' })
+      } catch {
+        // no session to delete, continue
+      }
+      return account.createEmailPasswordSession({ email, password })
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] })
     },
