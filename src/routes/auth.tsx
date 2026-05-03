@@ -6,7 +6,8 @@ import { useLogin, useSignup } from '@/hooks/useAuth'
 export const Route = createFileRoute('/auth')({
   beforeLoad: async () => {
     try {
-      await account.get()
+      const user = await account.get()
+      if (!user.email) return
       throw redirect({ to: '/' })
     } catch (e) {
       if (e instanceof Response) throw e
