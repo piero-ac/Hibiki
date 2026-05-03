@@ -5,6 +5,7 @@ export function Navigation() {
   const logout = useLogout()
   const router = useRouter()
   const { data: user } = useUser()
+  const isAnonymous = user && !user.email
 
   async function handleLogout() {
     await logout.mutateAsync()
@@ -37,13 +38,15 @@ export function Navigation() {
             Admin
           </Link>
         )}
-        <button
-          onClick={handleLogout}
-          disabled={logout.isPending}
-          className="text-sm text-red-500 disabled:opacity-50"
-        >
-          {logout.isPending ? 'Logging out...' : 'Log out'}
-        </button>
+        {!isAnonymous && (
+          <button
+            onClick={handleLogout}
+            disabled={logout.isPending}
+            className="text-sm text-red-500 disabled:opacity-50"
+          >
+            {logout.isPending ? 'Logging out...' : 'Log out'}
+          </button>
+        )}
       </div>
     </nav>
   )
