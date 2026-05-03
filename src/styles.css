@@ -1,1 +1,13 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-steel-50: #f8f9fa;
+  --color-steel-100: #e9ecef;
+  --color-steel-200: #dee2e6;
+  --color-steel-300: #ced4da;
+  --color-steel-400: #adb5bd;
+  --color-steel-500: #6c757d;
+  --color-steel-600: #495057;
+  --color-steel-700: #343a40;
+  --color-steel-800: #212529;
+}
