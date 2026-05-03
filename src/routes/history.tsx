@@ -10,7 +10,7 @@ export const Route = createFileRoute('/history')({
   beforeLoad: async () => {
     try {
       const user = await account.get()
-      return { userId: user.$id }
+      return { userId: user.$id, isAnonymous: !user.email }
     } catch {
       throw redirect({ to: '/auth' })
     }
@@ -19,12 +19,18 @@ export const Route = createFileRoute('/history')({
 })
 
 function RouteComponent() {
-  const { userId } = Route.useRouteContext()
+  const { userId, isAnonymous } = Route.useRouteContext()
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['sessions', userId],
-    queryFn: () =>
-      tablesDB.listRows({
+    queryFn: () => {
+      if (isAnonymous) {
+        const sessions = JSON.parse(
+          localStorage.getItem('hibiki-sessions') ?? '[]',
+        )
+        return { rows: sessions, total: sessions.length }
+      }
+      return tablesDB.listRows({
         databaseId: DATABASE_ID,
         tableId: 'sessions',
         queries: [
@@ -32,7 +38,8 @@ function RouteComponent() {
           Query.orderDesc('completedAt'),
           Query.limit(100),
         ],
-      }),
+      })
+    },
   })
 
   const sessions = data?.rows ?? []
@@ -49,6 +56,13 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
+      {isAnonymous && (
+        <div className="border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-500 mb-6">
+          You are browsing as a guest. Your history is saved locally and will be
+          lost if you clear your browser data.
+        </div>
+      )}
+
       {/* Streak */}
       <div className="border border-gray-200 rounded-xl p-6 text-center mb-8">
         <p className="text-5xl font-medium mb-1">{streak}</p>
@@ -69,7 +83,7 @@ function RouteComponent() {
         <div className="space-y-3">
           {sessions.map((session: any) => (
             <div
-              key={session.$id}
+              key={session.$id ?? session.id}
               className="border border-gray-200 rounded-lg px-4 py-4"
             >
               <div className="flex items-start justify-between">
