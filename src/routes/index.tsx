@@ -27,24 +27,29 @@ const categories = [
 
 function Home() {
   return (
-    <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
-      <h1 className="text-xl font-medium mb-2">hibiki</h1>
-      <p className="text-sm text-gray-500 mb-8">
-        Choose a category to start shadowing
-      </p>
-
-      <div className="space-y-3">
-        {categories.map((category) => (
-          <Link
-            key={category.id}
-            to="/category/$category"
-            params={{ category: category.id }}
-            className="block border border-gray-200 rounded-lg px-4 py-4 hover:border-gray-400 transition-colors"
-          >
-            <p className="text-sm font-medium">{category.label}</p>
-            <p className="text-sm text-gray-500 mt-1">{category.description}</p>
-          </Link>
-        ))}
+    <div className="min-h-screen bg-steel-200">
+      <div className="max-w-lg mx-auto px-4 py-8">
+        <h1 className="text-xl font-medium text-steel-800 mb-1">hibiki</h1>
+        <p className="text-sm text-steel-600 mb-8">
+          Choose a category to start shadowing
+        </p>
+        <div className="space-y-3">
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              to="/category/$category"
+              params={{ category: category.id }}
+              className="block bg-steel-50 border border-steel-300 rounded-xl px-5 py-4 hover:border-steel-500 hover:bg-white transition-colors"
+            >
+              <p className="text-sm font-medium text-steel-800">
+                {category.label}
+              </p>
+              <p className="text-sm text-steel-600 mt-1">
+                {category.description}
+              </p>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )

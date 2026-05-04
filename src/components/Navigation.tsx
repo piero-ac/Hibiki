@@ -14,27 +14,27 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="text-sm font-medium">
+      <nav className="bg-steel-50 border-b border-steel-300 px-4 py-3 flex items-center justify-between">
+        <Link to="/" className="text-sm font-medium text-steel-800">
           hibiki
         </Link>
         <div className="flex items-center gap-4">
           <Link
             to="/"
-            className="text-sm text-gray-500 hover:text-black transition-colors"
+            className="text-sm text-steel-500 hover:text-steel-800 transition-colors"
           >
             Home
           </Link>
           <Link
             to="/history"
-            className="text-sm text-gray-500 hover:text-black transition-colors"
+            className="text-sm text-steel-500 hover:text-steel-800 transition-colors"
           >
             History
           </Link>
           {user?.labels.includes('admin') && (
             <Link
               to="/admin"
-              className="text-sm text-gray-500 hover:text-black transition-colors"
+              className="text-sm text-steel-500 hover:text-steel-800 transition-colors"
             >
               Admin
             </Link>
@@ -42,7 +42,7 @@ export function Navigation() {
           {isAnonymous ? (
             <Link
               to="/auth"
-              className="text-sm text-gray-500 hover:text-black transition-colors"
+              className="text-sm text-steel-600 border border-steel-300 rounded-lg px-3 py-1 hover:border-steel-500 transition-colors"
             >
               Sign in
             </Link>
@@ -50,16 +50,17 @@ export function Navigation() {
             <button
               onClick={handleLogout}
               disabled={logout.isPending}
-              className="text-sm text-red-500 disabled:opacity-50"
+              className="text-sm text-red-400 hover:text-red-600 disabled:opacity-50 transition-colors"
             >
               {logout.isPending ? 'Logging out...' : 'Log out'}
             </button>
           )}
         </div>
       </nav>
+
       {isAnonymous && (
-        <div className="bg-gray-50 border-b border-gray-200 px-4 py-2 text-center">
-          <p className="text-xs text-gray-500">
+        <div className="bg-steel-100 border-b border-steel-200 px-4 py-2 text-center">
+          <p className="text-xs text-steel-500">
             You are browsing as a guest. Your history is saved locally and will
             be lost if you clear your browser data.
           </p>

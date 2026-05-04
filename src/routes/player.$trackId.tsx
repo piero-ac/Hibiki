@@ -179,218 +179,212 @@ function RouteComponent() {
   }
 
   if (isLoading)
-    return <div className="px-4 py-8 text-sm text-gray-500">Loading...</div>
+    return (
+      <div className="min-h-screen bg-steel-200">
+        <div className="max-w-lg mx-auto px-4 py-8 text-sm text-steel-500">
+          Loading...
+        </div>
+      </div>
+    )
+
   if (isError || !track)
-    return <div className="px-4 py-8 text-sm text-red-500">Track not found</div>
+    return (
+      <div className="min-h-screen bg-steel-200">
+        <div className="max-w-lg mx-auto px-4 py-8 text-sm text-red-500">
+          Track not found
+        </div>
+      </div>
+    )
 
   return (
-    <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
-      <button
-        onClick={() => router.history.back()}
-        className="text-sm text-gray-500 mb-6 hover:text-black transition-colors"
-      >
-        ← Back
-      </button>
-
-      <div className="mb-6">
-        <h1 className="text-xl font-medium">{track.title}</h1>
-        <span className="text-xs text-gray-400 capitalize">
-          {track.difficulty}
-        </span>
-      </div>
-
-      {/* Audio player */}
-      <div className="mb-6">
-        {audioUrl && (
-          <audio
-            ref={audioRef}
-            controls
-            loop={loop}
-            src={audioUrl}
-            className="w-full"
-          />
-        )}
+    <div className="min-h-screen bg-steel-200">
+      <div className="max-w-lg mx-auto px-4 py-8">
         <button
-          onClick={() => setLoop((p) => !p)}
-          className={`text-sm border rounded-lg px-3 py-1.5 transition-colors ${
-            loop ? 'border-black text-black' : 'border-gray-200 text-gray-500'
-          }`}
+          onClick={() => router.history.back()}
+          className="text-sm text-steel-500 mb-6 hover:text-steel-800 transition-colors"
         >
-          {loop ? 'Loop on' : 'Loop off'}
+          ← Back
         </button>
-      </div>
 
-      {mode === 'practice' && (
-        <div className="flex gap-2 mb-4">
-          {[0.8, 0.9, 1].map((s) => (
+        {/* Track info */}
+        <div className="mb-6">
+          <h1 className="text-xl font-medium text-steel-800">{track.title}</h1>
+          <span className="text-xs text-steel-500 capitalize">
+            {track.difficulty}
+          </span>
+        </div>
+
+        {/* Audio player */}
+        <div className="bg-steel-50 border border-steel-300 rounded-xl p-4 mb-4">
+          {audioUrl && (
+            <audio
+              ref={audioRef}
+              controls
+              loop={loop}
+              src={audioUrl}
+              className="w-full mb-3"
+            />
+          )}
+          <div className="flex items-center gap-2 flex-wrap">
             <button
-              key={s}
-              onClick={() => changeSpeed(s)}
-              className={`text-sm border rounded-lg px-3 py-1.5 transition-colors ${
-                speed === s
-                  ? 'border-black text-black'
-                  : 'border-gray-200 text-gray-500 hover:border-gray-400'
+              onClick={() => setLoop((p) => !p)}
+              className={`text-xs border rounded-lg px-3 py-1.5 transition-colors ${
+                loop
+                  ? 'border-steel-700 text-steel-700 bg-steel-100'
+                  : 'border-steel-300 text-steel-500 hover:border-steel-500'
               }`}
             >
-              {s}x
+              {loop ? 'Loop on' : 'Loop off'}
             </button>
-          ))}
-        </div>
-      )}
 
-      {mode === 'practice' && (
+            {mode === 'practice' &&
+              [0.8, 0.9, 1].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => changeSpeed(s)}
+                  className={`text-xs border rounded-lg px-3 py-1.5 transition-colors ${
+                    speed === s
+                      ? 'border-steel-700 text-steel-700 bg-steel-100'
+                      : 'border-steel-300 text-steel-500 hover:border-steel-500'
+                  }`}
+                >
+                  {s}x
+                </button>
+              ))}
+          </div>
+        </div>
+
+        {/* Seek buttons */}
+        {mode === 'practice' && (
+          <div className="flex gap-2 mb-4 flex-wrap">
+            {[-5, -3, -1, 1, 3, 5].map((s) => (
+              <button
+                key={s}
+                onClick={() => seek(s)}
+                className="text-xs border border-steel-300 text-steel-600 rounded-lg px-3 py-1.5 hover:border-steel-500 transition-colors"
+              >
+                {s > 0 ? `${s}s →` : `← ${Math.abs(s)}s`}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Transcript */}
         <div className="flex gap-2 mb-4">
           <button
-            onClick={() => seek(-5)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
+            onClick={() => setShowTranscript((p) => !p)}
+            className="text-xs border border-steel-300 text-steel-600 rounded-lg px-3 py-1.5 hover:border-steel-500 transition-colors"
           >
-            ← 5s
+            {showTranscript ? 'Hide transcript' : 'Show transcript'}
           </button>
-          <button
-            onClick={() => seek(-3)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-          >
-            ← 3s
-          </button>
-          <button
-            onClick={() => seek(-1)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-          >
-            ← 1s
-          </button>
-          <button
-            onClick={() => seek(1)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-          >
-            1s →
-          </button>
-          <button
-            onClick={() => seek(3)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-          >
-            3s →
-          </button>
-          <button
-            onClick={() => seek(5)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-          >
-            5s →
-          </button>
+          {track.transcript_translation && (
+            <button
+              onClick={() => setShowTranslation((p) => !p)}
+              className="text-xs border border-steel-300 text-steel-600 rounded-lg px-3 py-1.5 hover:border-steel-500 transition-colors"
+            >
+              {showTranslation ? 'Hide translation' : 'Show translation'}
+            </button>
+          )}
         </div>
-      )}
 
-      {/* Transcript toggles */}
-      <div className="flex gap-3 mb-4">
-        <button
-          onClick={() => setShowTranscript((p) => !p)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
-        >
-          {showTranscript ? 'Hide transcript' : 'Show transcript'}
-        </button>
-        {track.transcript_translation && (
+        {showTranscript && (
+          <div className="mb-4 p-4 bg-steel-50 border border-steel-200 rounded-xl text-base leading-relaxed text-steel-800">
+            {track.transcript}
+          </div>
+        )}
+
+        {showTranslation && track.transcript_translation && (
+          <div className="mb-4 p-4 bg-steel-50 border border-steel-200 rounded-xl text-sm leading-relaxed text-steel-600">
+            {track.transcript_translation}
+          </div>
+        )}
+
+        {/* Mode switcher */}
+        {mode === 'practice' && (
           <button
-            onClick={() => setShowTranslation((p) => !p)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-colors"
+            onClick={() => setMode('record')}
+            className="w-full bg-steel-50 border border-steel-300 rounded-xl py-2.5 text-sm text-steel-700 hover:border-steel-500 hover:bg-white transition-colors mb-3"
           >
-            {showTranslation ? 'Hide translation' : 'Show translation'}
+            Try recording
+          </button>
+        )}
+
+        {/* Record mode */}
+        {mode === 'record' && (
+          <div className="space-y-3 mb-3">
+            <div className="flex gap-3 items-center">
+              {!recording ? (
+                <button
+                  onClick={startRecording}
+                  className="flex-1 bg-red-500 text-white rounded-xl py-2.5 text-sm font-medium"
+                >
+                  Start recording
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={stopRecording}
+                    className="flex-1 border border-red-400 text-red-500 rounded-xl py-2.5 text-sm font-medium"
+                  >
+                    Stop recording
+                  </button>
+                  <p className="text-sm text-red-500 font-medium tabular-nums">
+                    {Math.floor(timer / 60)
+                      .toString()
+                      .padStart(2, '0')}
+                    :{(timer % 60).toString().padStart(2, '0')}
+                  </p>
+                </>
+              )}
+            </div>
+
+            {recordingUrl && (
+              <div className="bg-steel-50 border border-steel-200 rounded-xl p-4">
+                <p className="text-xs text-steel-500 mb-2">Your recording</p>
+                <audio controls src={recordingUrl} className="w-full" />
+
+                <div className="mt-4">
+                  <p className="text-xs text-steel-500 mb-2">
+                    Rate your attempt
+                  </p>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setRating(r)}
+                        className={`flex-1 py-2 text-sm border rounded-lg transition-colors ${
+                          rating === r
+                            ? 'border-steel-700 text-steel-700 bg-steel-100 font-medium'
+                            : 'border-steel-300 text-steel-500 hover:border-steel-500'
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {error && <p className="text-sm text-red-500">{error}</p>}
+          </div>
+        )}
+
+        {/* Mark as complete */}
+        {mode === 'record' && recordingUrl && (
+          <button
+            onClick={handleComplete}
+            disabled={!rating || saveSession.isPending || saveSession.isSuccess}
+            className="w-full bg-steel-800 text-steel-50 rounded-xl py-2.5 text-sm font-medium disabled:opacity-50"
+          >
+            {saveSession.isPending
+              ? 'Saving...'
+              : saveSession.isSuccess
+                ? 'Session saved'
+                : 'Mark as complete'}
           </button>
         )}
       </div>
-
-      {showTranscript && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg text-lg leading-relaxed">
-          {track.transcript}
-        </div>
-      )}
-
-      {showTranslation && track.transcript_translation && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg text-sm leading-relaxed text-gray-600">
-          {track.transcript_translation}
-        </div>
-      )}
-
-      {/* Mode */}
-      {mode === 'practice' && (
-        <button
-          onClick={() => setMode('record')}
-          className="w-full border border-gray-200 rounded-lg py-2 text-sm hover:border-gray-400 transition-colors mb-3"
-        >
-          Try recording
-        </button>
-      )}
-
-      {mode === 'record' && (
-        <div className="space-y-3 mb-3">
-          <div className="flex gap-3">
-            {!recording ? (
-              <button
-                onClick={startRecording}
-                className="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium"
-              >
-                Start recording
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={stopRecording}
-                  className="flex-1 border border-red-500 text-red-500 rounded-lg py-2 text-sm font-medium"
-                >
-                  Stop recording
-                </button>
-                <p className="text-sm text-red-500 font-medium tabular-nums">
-                  {Math.floor(timer / 60)
-                    .toString()
-                    .padStart(2, '0')}
-                  :{(timer % 60).toString().padStart(2, '0')}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {recordingUrl && (
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Your recording</p>
-              <audio controls src={recordingUrl} className="w-full" />
-
-              <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2">Rate your attempt</p>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => setRating(r)}
-                      className={`flex-1 py-2 text-sm border rounded-lg transition-colors ${
-                        rating === r
-                          ? 'border-black text-black font-medium'
-                          : 'border-gray-200 text-gray-500 hover:border-gray-400'
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
-        </div>
-      )}
-
-      {/* Mark as complete — only available in record mode after recording */}
-      {mode === 'record' && recordingUrl && (
-        <button
-          onClick={handleComplete}
-          disabled={!rating || saveSession.isPending || saveSession.isSuccess}
-          className="w-full bg-black text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50"
-        >
-          {saveSession.isPending
-            ? 'Saving...'
-            : saveSession.isSuccess
-              ? 'Session saved'
-              : 'Mark as complete'}
-        </button>
-      )}
     </div>
   )
 }

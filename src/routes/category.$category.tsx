@@ -18,6 +18,8 @@ export const Route = createFileRoute('/category/$category')({
   component: CategoryPage,
 })
 
+const difficulties = ['beginner', 'intermediate', 'advanced']
+
 function CategoryPage() {
   const { category } = Route.useParams()
   const [page, setPage] = useState(0)
@@ -37,66 +39,69 @@ function CategoryPage() {
   })
 
   const tracks = data?.rows ?? []
-  const total = data?.total ?? 0
-  const totalPages = Math.ceil(total / PAGE_SIZE)
+  // const total = data?.total ?? 0
+  // const totalPages = Math.ceil(total / PAGE_SIZE)
 
   if (isLoading)
-    return <div className="px-4 py-8 text-sm text-gray-500">Loading...</div>
+    return (
+      <div className="min-h-screen bg-steel-200">
+        <div className="max-w-5xl mx-auto px-4 py-8 text-sm text-steel-500">
+          Loading...
+        </div>
+      </div>
+    )
+
   if (isError)
     return (
-      <div className="px-4 py-8 text-sm text-red-500">
-        Failed to load tracks
+      <div className="min-h-screen bg-steel-200">
+        <div className="max-w-5xl mx-auto px-4 py-8 text-sm text-red-500">
+          Failed to load tracks
+        </div>
       </div>
     )
 
   return (
-    <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
-      <h1 className="text-xl font-medium capitalize mb-6">{category}</h1>
-
-      {tracks.length === 0 ? (
-        <p className="text-sm text-gray-500">No tracks found</p>
-      ) : (
-        <div className="space-y-3">
-          {tracks.map((track: any) => (
-            <Link
-              key={track.$id}
-              to="/player/$trackId"
-              params={{ trackId: track.$id }}
-              className="block border border-gray-200 rounded-lg px-4 py-4 hover:border-gray-400 transition-colors"
-            >
-              <p className="text-sm font-medium">{track.title}</p>
-              <div className="flex gap-3 mt-1">
-                <span className="text-xs text-gray-400 capitalize">
-                  {track.difficulty}
-                </span>
-                <span className="text-xs text-gray-400">{track.duration}s</span>
+    <div className="min-h-screen bg-steel-200">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        <h1 className="text-xl font-medium text-steel-800 capitalize mb-8">
+          {category}
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {difficulties.map((difficulty) => {
+            const filtered = tracks.filter(
+              (t: any) => t.difficulty === difficulty,
+            )
+            return (
+              <div key={difficulty}>
+                <h2 className="text-xs uppercase tracking-wide text-steel-600 font-medium mb-3">
+                  {difficulty}
+                </h2>
+                <div className="space-y-2">
+                  {filtered.length === 0 ? (
+                    <p className="text-xs text-steel-500">No tracks</p>
+                  ) : (
+                    filtered.map((track: any) => (
+                      <Link
+                        key={track.$id}
+                        to="/player/$trackId"
+                        params={{ trackId: track.$id }}
+                        className="block bg-steel-50 border border-steel-300 rounded-xl px-4 py-3 hover:border-steel-500 hover:bg-white transition-colors"
+                      >
+                        <p className="text-sm font-medium text-steel-800">
+                          {track.title}
+                        </p>
+                        <p className="text-xs text-steel-500 mt-1">
+                          {track.duration}s
+                        </p>
+                      </Link>
+                    ))
+                  )}
+                </div>
               </div>
-            </Link>
-          ))}
+            )
+          })}
         </div>
-      )}
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-8">
-          <button
-            onClick={() => setPage((p) => p - 1)}
-            disabled={page === 0}
-            className="text-sm text-gray-500 disabled:opacity-30"
-          >
-            Previous
-          </button>
-          <span className="text-sm text-gray-400">
-            {page + 1} / {totalPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={page >= totalPages - 1}
-            className="text-sm text-gray-500 disabled:opacity-30"
-          >
-            Next
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   )
 }
