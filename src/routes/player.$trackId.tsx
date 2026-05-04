@@ -82,19 +82,22 @@ function RouteComponent() {
 
   async function startRecording() {
     setError('')
-    chunksRef.current = [] // clear previous chunks
-    setRecordingUrl(null) // clear previous recording
+    chunksRef.current = []
+    setRecordingUrl(null)
     setRating(null)
     startTimer()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : 'audio/mp4'
+      const mediaRecorder = new MediaRecorder(stream, { mimeType })
       mediaRecorderRef.current = mediaRecorder
       chunksRef.current = []
 
       mediaRecorder.ondataavailable = (e) => chunksRef.current.push(e.data)
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const blob = new Blob(chunksRef.current, { type: mimeType })
         const url = URL.createObjectURL(blob)
         setRecordingUrl(url)
         stream.getTracks().forEach((t) => t.stop())
