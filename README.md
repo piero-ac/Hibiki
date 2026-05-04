@@ -1,204 +1,126 @@
-Welcome to your new TanStack Start app! 
+# Hibiki
 
-# Getting Started
+A language shadowing app for Japanese learners. Browse audio clips, practice shadowing, record yourself, and track your progress over time.
 
-To run this application:
+## Features
+
+- **Guest mode** — browse and practice without signing up, history saved locally
+- **Free practice** — loop audio, toggle transcript and translation, adjust playback speed, seek controls
+- **Record and compare** — record your shadowing attempt and compare it to the original audio
+- **Session history** — track completed sessions with self ratings
+- **Streak counter** — consecutive days of practice
+- **Admin panel** — upload and manage audio tracks
+
+## Screenshots
+
+![Auth](./screenshots/auth.png)
+![Home](./screenshots/home.png)
+![Free Practice](./screenshots/free-practice.png)
+![Record Attempt](./screenshots/record-attempt.png)
+![History](./screenshots/history.png)
+![Admin](./screenshots/admin.png)
+
+## Stack
+
+- **Frontend** — Vite + React + TypeScript
+- **Routing** — TanStack Router
+- **Data fetching** — TanStack Query
+- **Backend** — Appwrite (Auth + Database + Storage)
+- **Styling** — Tailwind CSS v4 with Light Steel color palette
+- **Deployment** — Vercel
+
+## Getting Started
 
 ```bash
 npm install
 npm run dev
 ```
 
-# Building For Production
-
-To build this application for production:
+## Building for Production
 
 ```bash
 npm run build
 ```
 
-## Testing
+## Environment Variables
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
-
-```bash
-npm run test
-```
-
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `npm install @tailwindcss/vite tailwindcss -D`
-
-## Linting & Formatting
-
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+Create a `.env.local` file in the root:
 
 ```bash
-npm run lint
-npm run format
-npm run check
+VITE_APPWRITE_ENDPOINT=https://<REGION>.cloud.appwrite.io/v1
+VITE_APPWRITE_PROJECT_ID=your-project-id
+VITE_APPWRITE_DATABASE_ID=your-database-id
+VITE_APPWRITE_AUDIO_BUCKET_ID=your-audio-bucket-id
 ```
 
+## Project Structure
 
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
+```
+src/
+├── routes/          # TanStack Router file-based routes
+│   ├── __root.tsx   # Root layout with navigation
+│   ├── index.tsx    # Home page — category cards
+│   ├── auth.tsx     # Sign in + guest mode
+│   ├── category/
+│   │   └── $category.tsx  # Tracks by difficulty
+│   ├── player/
+│   │   └── $trackId.tsx   # Audio player + shadowing modes
+│   ├── history.tsx  # Session history + streak
+│   └── admin.tsx    # Track upload panel
+├── hooks/
+│   └── useAuth.ts   # Auth hooks (useUser, useLogin, useLogout, useSignup)
+├── lib/
+│   └── appwrite.ts  # Appwrite client setup
+└── utils/
+    └── calculateStreak.ts  # Streak and date utilities
 ```
 
-Then anywhere in your JSX you can use it like so:
+## Database Schema
 
-```tsx
-<Link to="/about">About</Link>
-```
+### tracks
 
-This will create a link that will navigate to the `/about` route.
+| Column                 | Type    | Required |
+| ---------------------- | ------- | -------- |
+| audioFileId            | string  | yes      |
+| title                  | string  | yes      |
+| language               | string  | yes      |
+| difficulty             | enum    | yes      |
+| category               | string  | yes      |
+| duration               | integer | yes      |
+| source                 | string  | no       |
+| transcript             | string  | yes      |
+| transcript_translation | string  | no       |
 
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+### sessions
 
-### Using A Layout
+| Column      | Type     | Required |
+| ----------- | -------- | -------- |
+| userId      | string   | yes      |
+| trackId     | string   | yes      |
+| trackTitle  | string   | yes      |
+| completedAt | datetime | yes      |
+| rating      | integer  | yes      |
 
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
+## Shadowing Modes
 
-Here is an example layout that includes a header:
+**Mode 1 — Free Practice**
+Listen and shadow the audio as many times as needed. Loop toggle, speed controls, seek buttons, and transcript toggle available.
 
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+**Mode 2 — Record and Compare**
+Record yourself shadowing the clip and play it back alongside the original. Rate your attempt 1-5 before marking the session complete.
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
+## Roadmap
 
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+### V1.5
 
-## Server Functions
+- Playback speed expansion (0.5x, 0.75x, 1.25x, 1.5x)
+- Loop selected segment
+- Streak improvements
+- Recently played
 
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
+### V2
 
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+- Admin upload page with auto SRT generation via Whisper
+- Video/section grouping for clips
+- Leaderboard and user profiles
+- Multiple languages
