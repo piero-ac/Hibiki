@@ -1,5 +1,7 @@
 # Hibiki
 
+**Live demo:** [hibiki-orcin.vercel.app](https://hibiki-orcin.vercel.app)
+
 A language shadowing app for Japanese learners. Browse audio clips, practice shadowing, record yourself, and track your progress over time.
 
 ## Features
